@@ -1,0 +1,42 @@
+Categories:
+  - Security
+License: MIT
+AuthorName: Adi K
+WebSite: https://github.com/adikul1023/SecureScreen
+SourceCode: https://github.com/adikul1023/SecureScreen
+IssueTracker: https://github.com/adikul1023/SecureScreen/issues
+Changelog: https://github.com/adikul1023/SecureScreen/releases
+
+AutoName: SecureScreen
+Summary: Protect selected apps from screenshots and screen recording
+Description: |
+    SecureScreen helps protect sensitive app content from screenshot and screen-recording capture.
+
+    The app can protect selected apps, or run in a system-wide mode.
+    It monitors the foreground app, then applies secure protection logic through an on-device foreground service.
+
+    Features:
+    * App-wise and system-wide protection modes
+    * Quick enable/disable from persistent notification
+    * Optional watermark overlay
+    * Auto-start option after reboot
+
+    Permissions are used only for local on-device protection:
+    * Usage Access to detect the foreground app
+    * Notification permission for foreground service visibility
+    * Overlay permission only when overlay-based features are used
+
+RepoType: git
+Repo: https://github.com/adikul1023/SecureScreen.git
+
+Builds:
+  - versionName: 1.0.0
+    versionCode: 1
+    commit: v1.0.1
+    gradle:
+      - yes
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+CurrentVersion: 1.0.0
+CurrentVersionCode: 1
