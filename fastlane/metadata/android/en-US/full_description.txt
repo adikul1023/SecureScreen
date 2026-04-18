@@ -1,0 +1,14 @@
+SecureScreen helps protect sensitive app content from screenshots and screen recording.
+
+Choose exactly which apps to protect, or enable system-wide mode when stronger coverage is needed.
+
+Features:
+- App-wise and system-wide protection modes
+- Quick enable/disable from the persistent notification
+- Optional watermark overlay
+- Auto-start option after reboot
+
+Permissions are used only for local on-device protection:
+- Usage Access to detect the foreground app
+- Notification permission for foreground service visibility and controls
+- Overlay permission only when optional overlay features are enabled
