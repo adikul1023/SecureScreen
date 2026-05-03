@@ -11,6 +11,9 @@ AutoName: SecureScreen
 
 RepoType: git
 Repo: https://github.com/adikul1023/SecureScreen.git
+Binaries: https://github.com/adikul1023/SecureScreen/releases/download/v1.0.0/app-release.apk
+AllowedAPKSigningKeys:
+  - 561525450efd4c7412dd474780fca4e70c84b00e5aa261a7fb13df08bbcd0659
 
 Builds:
   - versionName: 1.0.0
