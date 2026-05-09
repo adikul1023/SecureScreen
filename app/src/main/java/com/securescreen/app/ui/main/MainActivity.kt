@@ -137,6 +137,17 @@ class MainActivity : AppCompatActivity() {
 
             override fun afterTextChanged(s: Editable?) = Unit
         })
+
+        // Hide keyboard when Enter/Search button is pressed
+        binding.searchEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH) {
+                val imm = getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+                imm.hideSoftInputFromWindow(binding.searchEditText.windowToken, 0)
+                true
+            } else {
+                false
+            }
+        }
     }
 
     private fun setupClicks() {

@@ -96,9 +96,12 @@ class ForegroundService : Service() {
         watermarkOverlayManager = WatermarkOverlayManager(applicationContext)
         inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         protectionEnabled = repository.isProtectionEnabled()
-        refreshEnabledImePackages()
-        registerSystemDialogsReceiver()
-        createNotificationChannel()
+        runCatching { refreshEnabledImePackages() }
+            .onFailure { Log.w(TAG, "Unable to refresh IME package list on create", it) }
+        runCatching { registerSystemDialogsReceiver() }
+            .onFailure { Log.w(TAG, "Unable to register system dialogs receiver", it) }
+        runCatching { createNotificationChannel() }
+            .onFailure { Log.w(TAG, "Unable to create notification channel", it) }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -107,27 +110,37 @@ class ForegroundService : Service() {
             return START_NOT_STICKY
         }
 
-        when (intent?.action) {
-            ACTION_TOGGLE_PROTECTION -> {
-                setProtectionEnabledInternal(!protectionEnabled)
+        val startResult = runCatching {
+            when (intent?.action) {
+                ACTION_TOGGLE_PROTECTION -> {
+                    setProtectionEnabledInternal(!protectionEnabled)
+                }
+
+                ACTION_SET_PROTECTION -> {
+                    val enabled = intent.getBooleanExtra(EXTRA_PROTECTION_ENABLED, true)
+                    setProtectionEnabledInternal(enabled)
+                }
+
+                else -> Unit
             }
 
-            ACTION_SET_PROTECTION -> {
-                val enabled = intent.getBooleanExtra(EXTRA_PROTECTION_ENABLED, true)
-                setProtectionEnabledInternal(enabled)
-            }
+            startForeground(NOTIFICATION_ID, buildNotification())
+            repository.setServiceEnabled(true)
+            fastPollingUntilElapsedMs =
+                SystemClock.elapsedRealtime() + FAST_POLL_AFTER_SWITCH_WINDOW_MS
 
-            else -> Unit
+            mainHandler.removeCallbacks(pollRunnable)
+            mainHandler.post(pollRunnable)
+
+            START_STICKY
+        }.getOrElse { throwable ->
+            Log.e(TAG, "onStartCommand failed", throwable)
+            repository.setServiceEnabled(false)
+            stopSelf()
+            START_NOT_STICKY
         }
 
-        startForeground(NOTIFICATION_ID, buildNotification())
-        repository.setServiceEnabled(true)
-        fastPollingUntilElapsedMs = SystemClock.elapsedRealtime() + FAST_POLL_AFTER_SWITCH_WINDOW_MS
-
-        mainHandler.removeCallbacks(pollRunnable)
-        mainHandler.post(pollRunnable)
-
-        return START_STICKY
+        return startResult
     }
 
     override fun onDestroy() {
@@ -242,8 +255,12 @@ class ForegroundService : Service() {
             mainHandler.post(pollRunnable)
         }
 
-        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        manager.notify(NOTIFICATION_ID, buildNotification())
+        runCatching {
+            val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            manager.notify(NOTIFICATION_ID, buildNotification())
+        }.onFailure {
+            Log.w(TAG, "Unable to update foreground notification", it)
+        }
         notifyProtectionStateChanged(enabled)
     }
 

@@ -28,13 +28,17 @@
         android:layout_marginStart="-90dp"
         android:background="@drawable/bg_orb_azure" />
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="match_parent">
 
-        <com.google.android.material.card.MaterialCardView
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_glass_card"
@@ -269,9 +273,8 @@
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:layout_weight="1"
             android:background="@drawable/bg_glass_card"
             android:padding="1dp"
             app:cardBackgroundColor="@android:color/transparent"
@@ -279,7 +282,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="12dp">
 
@@ -301,8 +304,14 @@
                     android:hint="@string/search_apps_hint"
                     app:boxBackgroundColor="@color/glass_surface_strong"
                     app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
                     app:boxStrokeColor="@color/glass_stroke"
-                    app:hintTextColor="@color/text_secondary">
+                    app:boxStrokeWidth="1dp"
+                    app:hintTextColor="@color/text_secondary"
+                    app:startIconTint="@color/text_secondary">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/searchEditText"
@@ -329,14 +338,14 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/appsRecyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="400dp"
                     android:layout_marginTop="8dp"
-                    android:layout_weight="1"
                     android:clipToPadding="false"
                     android:paddingBottom="8dp"
                     tools:listitem="@layout/item_app" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
-    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
 </FrameLayout>
