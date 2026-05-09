@@ -4,6 +4,7 @@ Choose exactly which apps to protect, or enable system-wide mode when stronger c
 
 Features:
 - App-wise and system-wide protection modes
+- Search and filter the app list by name or package
 - Quick enable/disable from the persistent notification
 - Optional watermark overlay
 - Auto-start option after reboot

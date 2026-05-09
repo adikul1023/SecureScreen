@@ -5,6 +5,7 @@ SecureScreen is a Kotlin Android app that prevents screenshots and screen record
 ## Features
 
 - Select protected apps from installed launchable applications
+- Search apps by name or package before enabling protection
 - Foreground app detection via `UsageStatsManager`
 - Foreground service with persistent notification
 - Transparent `SecureActivity` enforcement with `FLAG_SECURE`
@@ -24,3 +25,13 @@ SecureScreen is a Kotlin Android app that prevents screenshots and screen record
 - Grant Usage Access permission in system settings.
 - Enable notification permissions on Android 13+ if prompted.
 - Grant Overlay permission only if watermark is enabled.
+
+## Play Store Release
+
+- Use the publishing checklist: `playstore/PLAYSTORE_CHECKLIST.md`
+- Use listing text draft: `playstore/STORE_LISTING.en-US.md`
+- Use permissions/data-safety guide: `playstore/DATA_SAFETY_AND_PERMISSIONS.md`
+- Host privacy policy from: `docs/privacy-policy.html`
+- Build upload bundle:
+	- Windows: `./gradlew.bat bundleRelease`
+	- Linux/macOS: `./gradlew bundleRelease`

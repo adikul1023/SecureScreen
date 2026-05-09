@@ -9,6 +9,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.securescreen.app.R
+import com.securescreen.app.data.AppInfo
 import com.securescreen.app.data.AppRepository
 import com.securescreen.app.data.PermissionUtils
 import com.securescreen.app.databinding.ActivityMainBinding
@@ -29,6 +32,9 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
     private lateinit var adapter: AppSelectionAdapter
     private lateinit var repository: AppRepository
+    private var allApps: List<AppInfo> = emptyList()
+    private var protectedPackages: Set<String> = emptySet()
+    private var appSearchQuery: String = ""
     private var updatingScopeSelector = false
     private var updatingBootToggle = false
     private var pendingEnableProtectionAfterNotificationPermission = false
@@ -71,6 +77,7 @@ class MainActivity : AppCompatActivity() {
 
         repository = AppRepository(applicationContext)
         setupRecyclerView()
+        setupSearch()
         setupClicks()
         setupScopeSelector()
         observeViewModel()
@@ -117,6 +124,19 @@ class MainActivity : AppCompatActivity() {
 
         binding.appsRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.appsRecyclerView.adapter = adapter
+    }
+
+    private fun setupSearch() {
+        binding.searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                appSearchQuery = s?.toString().orEmpty()
+                renderAppList()
+            }
+
+            override fun afterTextChanged(s: Editable?) = Unit
+        })
     }
 
     private fun setupClicks() {
@@ -222,20 +242,46 @@ class MainActivity : AppCompatActivity() {
 
         if (systemWide) {
             binding.selectedCount.text = getString(R.string.systemwide_active_note)
+            binding.searchInputLayout.visibility = View.GONE
+            binding.noAppsText.visibility = View.GONE
             binding.appsRecyclerView.visibility = View.GONE
         } else {
             binding.selectedCount.text = getString(R.string.selected_count, protectedCount)
+            binding.searchInputLayout.visibility = View.VISIBLE
             binding.appsRecyclerView.visibility = View.VISIBLE
+            renderAppList()
         }
+    }
+
+    private fun renderAppList() {
+        if (repository.isAggressiveModeEnabled()) {
+            adapter.submit(emptyList(), protectedPackages)
+            return
+        }
+
+        val query = appSearchQuery.trim()
+        val filteredApps = if (query.isBlank()) {
+            allApps
+        } else {
+            allApps.filter { app ->
+                app.appName.contains(query, ignoreCase = true) ||
+                    app.packageName.contains(query, ignoreCase = true)
+            }
+        }
+
+        adapter.submit(filteredApps, protectedPackages)
+        binding.noAppsText.visibility = if (filteredApps.isEmpty()) View.VISIBLE else View.GONE
     }
 
     private fun observeViewModel() {
         viewModel.apps.observe(this) { apps ->
-            adapter.submit(apps, viewModel.protectedPackages.value.orEmpty())
+            allApps = apps
+            renderAppList()
         }
 
         viewModel.protectedPackages.observe(this) { protectedPackages ->
-            adapter.submit(viewModel.apps.value.orEmpty(), protectedPackages)
+            this.protectedPackages = protectedPackages
+            renderAppList()
             updateScopeUi(repository.isAggressiveModeEnabled(), protectedPackages.size)
         }
 
