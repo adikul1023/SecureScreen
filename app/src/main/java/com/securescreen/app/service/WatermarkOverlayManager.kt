@@ -57,7 +57,7 @@ class WatermarkOverlayManager(private val context: Context) {
 
     fun hide() {
         watermarkView?.let {
-            windowManager.removeView(it)
+            runCatching { windowManager.removeView(it) }
         }
         watermarkView = null
     }

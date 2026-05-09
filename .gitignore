@@ -15,6 +15,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+.env
 keystore.properties
 release-keystore.jks
 *.apk
