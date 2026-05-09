@@ -23,6 +23,9 @@
     <string name="mode_description_appwise">Protect only selected apps from the list below.</string>
     <string name="mode_description_systemwide">Protect everything: apps, home screen, recents, and keyboard transitions.</string>
     <string name="systemwide_active_note">System-wide mode enabled. App list is ignored.</string>
+    <string name="search_apps">Search apps</string>
+    <string name="search_apps_hint">Search by app name or package</string>
+    <string name="no_apps_match_search">No apps match your search.</string>
     <string name="auto_start_on_boot">Auto-start on boot</string>
     <string name="battery_optimization_status">Battery optimization: %1$s</string>
     <string name="battery_optimization_ignored">Ignored</string>
