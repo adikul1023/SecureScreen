@@ -1,0 +1,4 @@
+Fix notification enable/disable actions.
+Improve protected app list loading speed.
+Add update checking and release links.
+Improve notification and background service recovery.

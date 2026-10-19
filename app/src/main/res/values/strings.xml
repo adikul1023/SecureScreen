@@ -18,6 +18,12 @@
     <string name="about_title">About</string>
     <string name="about_description">Privacy-focused screenshot and screen recording protection.</string>
     <string name="version_label">Version %1$s (%2$d)</string>
+    <string name="checking_for_updates">Checking for updates...</string>
+    <string name="up_to_date">You are up to date.</string>
+    <string name="update_available">Update available: %1$s</string>
+    <string name="open_update">Open update</string>
+    <string name="contact_me_github">Contact me on GitHub</string>
+    <string name="buy_me_a_coffee">Buy me a coffee</string>
     <string name="systemwide_mode_title">System Protection</string>
     <string name="app_specific_mode_title">App Protection</string>
     <string name="selected_apps_summary">%1$d apps selected</string>

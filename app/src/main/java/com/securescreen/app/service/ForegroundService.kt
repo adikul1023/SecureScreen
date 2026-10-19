@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat
 import com.securescreen.app.R
 import com.securescreen.app.data.AppRepository
 import com.securescreen.app.data.PermissionUtils
+import com.securescreen.app.receiver.NotificationDismissedReceiver
 import com.securescreen.app.receiver.WatchdogReceiver
 import com.securescreen.app.ui.main.MainActivity
 
@@ -521,6 +522,15 @@ class ForegroundService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
+        val deleteIntent = PendingIntent.getBroadcast(
+            this,
+            103,
+            Intent(this, NotificationDismissedReceiver::class.java),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val protectionPaused = paused || interrupted || !protectionEnabled
+
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_security)
             .setContentTitle(getString(R.string.notification_title))
@@ -534,11 +544,12 @@ class ForegroundService : Service() {
                 )
             )
             .setOngoing(true)
+            .setDeleteIntent(deleteIntent)
             .setContentIntent(pendingIntent)
             .addAction(
                 R.drawable.ic_security,
                 getString(
-                    if (paused || interrupted) R.string.notification_action_enable else R.string.notification_action_disable
+                    if (protectionPaused) R.string.notification_action_enable else R.string.notification_action_disable
                 ),
                 togglePendingIntent
             )

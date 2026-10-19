@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Build
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.core.content.ContextCompat
 import com.securescreen.app.R
 import com.securescreen.app.data.AppRepository
@@ -15,6 +16,10 @@ import com.google.android.material.slider.Slider
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import com.securescreen.app.data.UpdateChecker
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -40,6 +45,7 @@ class SettingsActivity : AppCompatActivity() {
             binding.watermarkSwitch.isChecked = false
         }
         updateOverlayPermissionState()
+        checkForUpdates()
     }
 
     private fun setupViews() {
@@ -101,6 +107,16 @@ class SettingsActivity : AppCompatActivity() {
         binding.grantOverlayPermissionButton.setOnClickListener {
             openOverlayPermissionScreen()
         }
+
+        binding.githubButton.setOnClickListener {
+            openUrl(GITHUB_URL)
+        }
+        binding.buyMeACoffeeButton.setOnClickListener {
+            openUrl(BUY_ME_A_COFFEE_URL)
+        }
+        binding.updateButton.setOnClickListener {
+            binding.updateButton.tag?.toString()?.let(::openUrl)
+        }
     }
 
     private fun openOverlayPermissionScreen() {
@@ -125,6 +141,27 @@ class SettingsActivity : AppCompatActivity() {
                 if (granted) R.color.status_active else R.color.status_inactive
             )
         )
+    }
+
+    private fun checkForUpdates() {
+        binding.updateStatus.text = getString(R.string.checking_for_updates)
+        lifecycleScope.launch {
+            val update = withContext(Dispatchers.IO) {
+                UpdateChecker.check(applicationContext)
+            }
+            if (update == null) {
+                binding.updateStatus.text = getString(R.string.up_to_date)
+                binding.updateButton.visibility = android.view.View.GONE
+            } else {
+                binding.updateStatus.text = getString(R.string.update_available, update.versionName)
+                binding.updateButton.tag = update.sourceUrl
+                binding.updateButton.visibility = android.view.View.VISIBLE
+            }
+        }
+    }
+
+    private fun openUrl(url: String) {
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
     }
 
     private fun getVersionText(): String {
@@ -180,5 +217,10 @@ class SettingsActivity : AppCompatActivity() {
             }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
+    }
+
+    companion object {
+        private const val GITHUB_URL = "https://github.com/adikul1023/SecureScreen"
+        private const val BUY_ME_A_COFFEE_URL = "https://buymeacoffee.com/adikul1023"
     }
 }

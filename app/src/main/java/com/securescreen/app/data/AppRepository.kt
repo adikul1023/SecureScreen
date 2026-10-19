@@ -3,7 +3,6 @@ package com.securescreen.app.data
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import java.util.UUID
@@ -20,45 +19,30 @@ class AppRepository(private val context: Context) {
             addCategory(Intent.CATEGORY_LAUNCHER)
         }
 
-        val launcherPackages = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            packageManager.queryIntentActivities(
-                launchIntent,
-                PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_ALL.toLong())
-            )
-        } else {
-            @Suppress("DEPRECATION")
-            packageManager.queryIntentActivities(launchIntent, PackageManager.MATCH_ALL)
-        }
-            .map { it.activityInfo.packageName }
-            .toSet()
-
-        val installedApps = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            packageManager.getInstalledApplications(
-                PackageManager.ApplicationInfoFlags.of(PackageManager.MATCH_ALL.toLong())
-            )
-        } else {
-            @Suppress("DEPRECATION")
-            packageManager.getInstalledApplications(PackageManager.MATCH_ALL)
-        }
-
         data class Candidate(
             val appInfo: AppInfo,
             val isSystemApp: Boolean
         )
 
-        return installedApps
+        val launchableActivities = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            packageManager.queryIntentActivities(
+                launchIntent,
+                PackageManager.ResolveInfoFlags.of(0)
+            )
+        } else {
+            @Suppress("DEPRECATION")
+            packageManager.queryIntentActivities(launchIntent, 0)
+        }
+
+        return launchableActivities
             .asSequence()
+            .map { it.activityInfo.applicationInfo }
             .filter { it.packageName != context.packageName }
-            .filter {
-                // Include launchable apps even on strict package-visibility devices.
-                it.packageName in launcherPackages ||
-                    packageManager.getLaunchIntentForPackage(it.packageName) != null
-            }
             .mapNotNull { app ->
                 runCatching {
                     val appName = packageManager.getApplicationLabel(app).toString()
                     val icon = packageManager.getApplicationIcon(app)
-                    val isSystem = (app.flags and ApplicationInfo.FLAG_SYSTEM) != 0
+                    val isSystem = (app.flags and android.content.pm.ApplicationInfo.FLAG_SYSTEM) != 0
 
                     Candidate(
                         appInfo = AppInfo(
