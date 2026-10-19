@@ -19,6 +19,7 @@ import com.google.android.material.chip.Chip
 import com.securescreen.app.R
 import com.securescreen.app.data.AppRepository
 import com.securescreen.app.data.PermissionUtils
+import com.securescreen.app.data.UpdateNotificationManager
 import com.securescreen.app.databinding.ActivityMainBinding
 import com.securescreen.app.service.ForegroundService
 import com.securescreen.app.service.SecureAccessibilityService
@@ -71,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         repository = AppRepository(applicationContext)
+        UpdateNotificationManager.check(this)
         binding.topAppBar.inflateMenu(R.menu.menu_main)
         setupTopBar()
         setupClicks()

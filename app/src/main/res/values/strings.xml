@@ -84,6 +84,9 @@
     <string name="notification_action_disable">Disable</string>
     <string name="notification_action_stop_service">Stop service</string>
     <string name="stop_protection">Stop</string>
+    <string name="update_notification_channel_name">SecureScreen Updates</string>
+    <string name="update_notification_title">SecureScreen update available</string>
+    <string name="update_notification_text">Version %1$s is available. Tap to view the update.</string>
 
     <string name="settings_title">Settings</string>
     <string name="enable_watermark">Enable watermark overlay</string>

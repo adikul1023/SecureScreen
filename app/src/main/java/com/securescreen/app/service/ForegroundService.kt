@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat
 import com.securescreen.app.R
 import com.securescreen.app.data.AppRepository
 import com.securescreen.app.data.PermissionUtils
+import com.securescreen.app.data.UpdateNotificationManager
 import com.securescreen.app.receiver.NotificationDismissedReceiver
 import com.securescreen.app.receiver.WatchdogReceiver
 import com.securescreen.app.ui.main.MainActivity
@@ -106,6 +107,13 @@ class ForegroundService : Service() {
         }
     }
 
+    private val updateCheckRunnable = object : Runnable {
+        override fun run() {
+            UpdateNotificationManager.check(this@ForegroundService)
+            mainHandler.postDelayed(this, UPDATE_CHECK_INTERVAL_MS)
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
         repository = AppRepository(applicationContext)
@@ -122,6 +130,8 @@ class ForegroundService : Service() {
             .onFailure { Log.w(TAG, "Unable to register system dialogs receiver", it) }
         runCatching { createNotificationChannel() }
             .onFailure { Log.w(TAG, "Unable to create notification channel", it) }
+        UpdateNotificationManager.check(this)
+        mainHandler.postDelayed(updateCheckRunnable, UPDATE_CHECK_INTERVAL_MS)
         mainHandler.post(healthCheckRunnable)
     }
 
@@ -171,6 +181,7 @@ class ForegroundService : Service() {
         mainHandler.removeCallbacks(pollRunnable)
         mainHandler.removeCallbacks(secureTeardownRunnable)
         mainHandler.removeCallbacks(healthCheckRunnable)
+        mainHandler.removeCallbacks(updateCheckRunnable)
         runCatching { unregisterReceiver(systemDialogsReceiver) }
         hideSecureOverlay()
         hideWatermark()
@@ -609,6 +620,7 @@ class ForegroundService : Service() {
         private const val RECENTS_SIGNAL_GRACE_MS = 1_500L
         private const val IME_PACKAGE_REFRESH_INTERVAL_MS = 10_000L
         private const val SESSION_EXIT_CONFIRM_MS = 1_500L
+        private const val UPDATE_CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000L
 
         private const val SYSTEM_DIALOG_REASON = "reason"
         private const val REASON_RECENT_APPS = "recent"
