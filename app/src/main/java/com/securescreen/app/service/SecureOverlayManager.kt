@@ -53,8 +53,17 @@ class SecureOverlayManager(
                 gravity = Gravity.TOP or Gravity.START
             }
 
-            windowManager.addView(view, params)
-            secureOverlayView = view
+            val added = runCatching {
+                windowManager.addView(view, params)
+                secureOverlayView = view
+                true
+            }.getOrElse {
+                android.util.Log.e("SecureOverlayManager", "Failed to add secure overlay view", it)
+                secureOverlayView = null
+                currentMode = null
+                false
+            }
+            if (!added) return
         }
 
         if (currentMode != mode) {

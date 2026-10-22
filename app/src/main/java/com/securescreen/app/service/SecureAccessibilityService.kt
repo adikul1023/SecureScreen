@@ -85,7 +85,21 @@ class SecureAccessibilityService : AccessibilityService() {
         super.onDestroy()
     }
 
-    override fun onAccessibilityEvent(event: AccessibilityEvent?) = Unit
+    override fun onAccessibilityEvent(event: AccessibilityEvent?) {
+        if (event == null) return
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            val pkg = event.packageName?.toString()
+            val cls = event.className?.toString()
+            if (!pkg.isNullOrBlank()) {
+                val intent = Intent(ACTION_WINDOW_STATE_CHANGED).apply {
+                    setPackage(packageName)
+                    putExtra(EXTRA_PACKAGE_NAME, pkg)
+                    putExtra(EXTRA_CLASS_NAME, cls)
+                }
+                sendBroadcast(intent)
+            }
+        }
+    }
 
     override fun onInterrupt() = Unit
 
@@ -133,5 +147,9 @@ class SecureAccessibilityService : AccessibilityService() {
         const val EXTRA_SECURE_MODE = "extra_secure_mode"
         const val EXTRA_WATERMARK_OPACITY = "extra_watermark_opacity"
         const val EXTRA_WATERMARK_SESSION_ID = "extra_watermark_session_id"
+
+        const val ACTION_WINDOW_STATE_CHANGED = "com.securescreen.app.action.WINDOW_STATE_CHANGED"
+        const val EXTRA_PACKAGE_NAME = "extra_package_name"
+        const val EXTRA_CLASS_NAME = "extra_class_name"
     }
 }

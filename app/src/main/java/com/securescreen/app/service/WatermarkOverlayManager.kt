@@ -51,7 +51,15 @@ class WatermarkOverlayManager(
                 y = 64
             }
 
-            windowManager.addView(watermarkView, params)
+            val added = runCatching {
+                windowManager.addView(watermarkView, params)
+                true
+            }.getOrElse {
+                android.util.Log.e("WatermarkOverlay", "Failed to add watermark view", it)
+                watermarkView = null
+                false
+            }
+            if (!added) return
         }
 
         watermarkView?.apply {

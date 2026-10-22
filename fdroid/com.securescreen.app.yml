@@ -11,7 +11,7 @@ AutoName: SecureScreen
 
 RepoType: git
 Repo: https://github.com/adikul1023/SecureScreen.git
-Binaries: https://github.com/adikul1023/SecureScreen/releases/download/v1.2.1/app-release.apk
+Binaries: https://github.com/adikul1023/SecureScreen/releases/download/v1.3.0/app-release.apk
 AllowedAPKSigningKeys:
   - 561525450efd4c7412dd474780fca4e70c84b00e5aa261a7fb13df08bbcd0659
 
@@ -64,8 +64,14 @@ Builds:
     gradle:
       - yes
     output: app/build/outputs/apk/release/app-release-unsigned.apk
+  - versionName: 1.3.0
+    versionCode: 9
+    commit: v1.3.0
+    gradle:
+      - yes
+    output: app/build/outputs/apk/release/app-release-unsigned.apk
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
-CurrentVersion: 1.2.1
-CurrentVersionCode: 8
+CurrentVersion: 1.3.0
+CurrentVersionCode: 9

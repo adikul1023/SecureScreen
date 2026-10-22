@@ -83,6 +83,10 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
+        binding.securityLogsCard.setOnClickListener {
+            startActivity(Intent(this, com.securescreen.app.ui.logs.SecurityLogsActivity::class.java))
+        }
+
         binding.languageCard.setOnClickListener {
             showLanguageSelectionDialog()
         }

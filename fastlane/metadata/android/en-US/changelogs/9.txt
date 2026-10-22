@@ -1,0 +1,4 @@
+Add transient capture-protection override for Recents in app-specific mode.
+Overhaul Watchdog 2.0 with stalled-loop recovery and exponential backoff.
+Add local Security Event Log timeline and redacted diagnostic export.
+Ensure seamless return to protected apps with zero flicker or capture gaps.

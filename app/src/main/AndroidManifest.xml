@@ -38,6 +38,11 @@
             android:label="@string/settings_title" />
 
         <activity
+            android:name=".ui.logs.SecurityLogsActivity"
+            android:exported="false"
+            android:label="@string/security_logs_title" />
+
+        <activity
             android:name=".ui.permissions.PermissionsActivity"
             android:exported="false"
             android:label="@string/manage_permissions" />

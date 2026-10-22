@@ -110,4 +110,31 @@
     <string name="language_spanish">Español</string>
     <string name="language_french">Français</string>
     <string name="tile_label_secure_screen">SecureScreen</string>
+
+    <string name="security_logs_title">Security Event Log</string>
+    <string name="security_logs_subtitle">Local-only timeline and diagnostics</string>
+    <string name="security_logs_settings_title">Security Event Log</string>
+    <string name="security_logs_settings_description">Local timeline showing protection events, transitions, and redacted diagnostic export.</string>
+    <string name="filter_all">All</string>
+    <string name="filter_errors">Errors</string>
+    <string name="filter_warnings">Warnings</string>
+    <string name="filter_info">Info</string>
+    <string name="search_logs_hint">Search logs by title, details or package</string>
+    <string name="no_security_logs_title">No Security Events Recorded</string>
+    <string name="no_security_logs_subtitle">Protection activations, app activity, and permission health will appear here locally.</string>
+    <string name="export_diagnostic_report">Export Diagnostic Report</string>
+    <string name="clear_logs">Clear Logs</string>
+    <string name="clear_logs_confirm_title">Clear Security Logs?</string>
+    <string name="clear_logs_confirm_message">This will permanently delete all local security event entries from this device.</string>
+    <string name="clear_logs_button">Clear</string>
+    <string name="logs_cleared">Security event logs cleared</string>
+    <string name="diagnostic_report_title">Redacted Diagnostic Report</string>
+    <string name="diagnostic_report_subtitle">Troubleshoot issues without sending sensitive telemetry to any server.</string>
+    <string name="copy_to_clipboard">Copy Report</string>
+    <string name="share_report">Share Report</string>
+    <string name="report_copied">Diagnostic report copied to clipboard</string>
+    <string name="share_report_subject">SecureScreen Diagnostic Report</string>
+    <string name="total_events_count">%1$d events recorded (local-only)</string>
+    <string name="error_count_badge">%1$d Errors</string>
+    <string name="warning_count_badge">%1$d Warnings</string>
 </resources>

@@ -19,6 +19,11 @@ class BootReceiver : BroadcastReceiver() {
         if (!PermissionUtils.hasNotificationPermission(context)) return
 
         if (repository.isProtectionEnabled() && repository.isAutoStartOnBootEnabled()) {
+            com.securescreen.app.service.WatchdogRecoveryManager.resetBackoff(context)
+            com.securescreen.app.service.WatchdogRecoveryManager.recordRecoveryAttempt(
+                context,
+                if (action == Intent.ACTION_BOOT_COMPLETED) "Device boot completed" else "App package updated"
+            )
             ForegroundService.start(context)
             ForegroundService.setProtectionEnabled(context, true)
             ForegroundService.scheduleWatchdog(context)
